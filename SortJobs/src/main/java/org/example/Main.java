@@ -99,7 +99,7 @@ public class Main {
                 if (part.getMimeType().equals("text/plain")) {
                     // Found the plain text part (message body)
                     messageBody = new String(part.getBody().decodeData());
-                    break; // Exit the loop
+                    break;
                 }
             }
         }
@@ -130,5 +130,8 @@ public class Main {
                 .filter(Objects::nonNull)
                 .toList();
 
+        for(int i = 0; i < messages.size(); i++) {
+            System.out.println(extractMessageBody(messages.get(i)));
+        }
     }
 }
