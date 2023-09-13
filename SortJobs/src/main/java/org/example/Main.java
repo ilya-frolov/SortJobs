@@ -18,8 +18,10 @@ import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -151,23 +153,50 @@ public class Main {
 
         }
 
-        //Writing all jobs to a file
-        String existingFile = "D:/Canada/Jobs/Viewed jobs links.txt";
-        String outputFile = "D:/Canada/Jobs/All received jobs.txt";
+        //Writing jobs to files
+        String existingFile = "D:/Canada/Jobs/All received jobs.txt";
+        String outputFile = "D:/Canada/Jobs/New jobs.txt";
 
         try {
-            FileWriter fileWriter = new FileWriter(outputFile);
+            FileWriter fileWriter = new FileWriter(existingFile, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            FileWriter fileWriter2 = new FileWriter(outputFile);
+            BufferedWriter bufferedWriter2 = new BufferedWriter(fileWriter2);
 
+            // Check if links exist in the existing file
+            String line;
             for (String link : links) {
-                bufferedWriter.write(link);
-                bufferedWriter.newLine();
-             }
+                // Read existing file
+                FileReader fileReader = new FileReader(existingFile);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+                // Read each line in the existing file
+                boolean notExist = true;
+                while ((line = bufferedReader.readLine()) != null) {
+                    // Check if the line contains the target link
+                    if (line.contains(link)) {
+                        notExist = false;
+                        break;
+                    }
+                }
+                bufferedReader.close();
+
+                if (notExist) {
+                    bufferedWriter.newLine();
+                    bufferedWriter.write(link);
+
+                    bufferedWriter2.newLine();
+                    bufferedWriter2.write(link);
+                }
+            }
+
+            bufferedWriter.close();
+            bufferedWriter2.close();
+
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error writing links to the file.");
         }
 
-        //Adding
     }
 }
