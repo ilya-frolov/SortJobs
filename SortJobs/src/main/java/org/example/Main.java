@@ -112,7 +112,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
         SCOPES = SCOPES.stream()
-                        .filter(it -> !it.equals(GmailScopes.GMAIL_METADATA)).collect(Collectors.toSet());
+                .filter(it -> !it.equals(GmailScopes.GMAIL_METADATA)).collect(Collectors.toSet());
 
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -133,27 +133,30 @@ public class Main {
                 .filter(Objects::nonNull)
                 .toList();
 
-        for(int i = 0; i < messages.size(); i++) {
+        List<String> links = new ArrayList<>();
 
+        for (int i = 0; i < messages.size(); i++) {
             String regex = "https://ca\\.indeed\\.com/rc/clk/\\S+";
             String msgBody = extractMessageBody(messages.get(i));
 
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(msgBody);
 
-            List <String> links = new ArrayList<>();
-
-            while (matcher.find()){
+            while (matcher.find()) {
                 String link = matcher.group();
                 links.add(link);
             }
 
             //System.out.println(msgBody);
 
-            for (String link : links) {
-                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                System.out.println("Link: " + link);
-            }
         }
+
+        int n = 1;
+        for (String link : links) {
+            System.out.println("" + n);
+            System.out.println("Link: " + link + "\n");
+            n += 1;
+        }
+
     }
 }
