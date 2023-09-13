@@ -23,11 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,7 +134,26 @@ public class Main {
                 .toList();
 
         for(int i = 0; i < messages.size(); i++) {
-            System.out.println(extractMessageBody(messages.get(i)));
+
+            String regex = "https://ca\\.indeed\\.com/rc/clk/\\S+";
+            String msgBody = extractMessageBody(messages.get(i));
+
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(msgBody);
+
+            List <String> links = new ArrayList<>();
+
+            while (matcher.find()){
+                String link = matcher.group();
+                links.add(link);
+            }
+
+            //System.out.println(msgBody);
+
+            for (String link : links) {
+                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                System.out.println("Link: " + link);
+            }
         }
     }
 }
